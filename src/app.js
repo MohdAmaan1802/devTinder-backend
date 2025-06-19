@@ -69,18 +69,30 @@ app.delete("/user", async (req, res) => {
     res.status(500).send("Error deleting user");
   }
 });
-app.patch("/user", async (req, res) => {
-  const userId = req.body.userId;
+app.patch("/user/:userId", async (req, res) => {
+  const userId = req.params?.userId;
   const data = req.body;
   try {
+    const ALLOWED_UPDATES = ["photoUrl", "about", "gender", "age", "skills"];
+
+    const isupdateAllowed = Object.keys(data).every((k) =>
+      ALLOWED_UPDATES.includes(k)
+    );
+    if (!isupdateAllowed) {
+      throw new Error("Update not allowed");
+    }
+    if (!skills.length > 10) {
+      throw new Error("Skills should not exceed then 10 items");
+    }
     const user = await User.findByIdAndUpdate({ _id: userId }, data, {
       returnDocument: "after",
+      runValidators: true,
     });
     console.log("User updated:", user);
     res.send("User updated successfully");
   } catch (err) {
     console.error("Error updating user:", err);
-    res.status(500).send("Error updating user");
+    res.status(500).send("Error updating user" + err.message);
   }
 });
 
