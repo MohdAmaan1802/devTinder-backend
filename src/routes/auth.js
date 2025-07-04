@@ -39,7 +39,7 @@ authRouter.post("/login", async (req, res) => {
     //find the user by email
     const user = await User.findOne({ emailId: emailId });
     if (!user) {
-      throw new Error("Ivalid Credentials");
+      throw new Error("Invalid Credentials");
     }
     //compare the password
     // const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -58,6 +58,18 @@ authRouter.post("/login", async (req, res) => {
   } catch (err) {
     console.error("Error logging in:", err);
     res.status(500).send("Error logging in" + err.message);
+  }
+});
+
+authRouter.post("/logout", async (req, res) => {
+  try {
+    res.cookie("token", null, {
+      expires: new Date(Date.now()),
+    });
+    res.send("Logout successful");
+  } catch (err) {
+    console.error("Error logging out:", err);
+    res.status(500).send("Error logging out" + err.message);
   }
 });
 
