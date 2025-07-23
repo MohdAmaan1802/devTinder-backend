@@ -4,17 +4,19 @@ const connectionRequestSchema = new mongoose.Schema(
   {
     formUserId: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "User", //reference to User collection
       required: true,
     },
     toUserId: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
     status: {
       type: String,
       required: true,
       enum: {
-        values: ["ignored", "accpeted", "rejected", "interested"],
+        values: ["ignored", "accepted", "rejected", "interested"],
         message: "{VALUE} is not a valid status",
       },
     },
